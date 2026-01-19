@@ -7,7 +7,6 @@ function App() {
   const [time, setTime] = useState("");
   const [tasks, setTasks] = useState([]);
 
-  // Get today's date (YYYY-MM-DD)
   const today = new Date().toISOString().split("T")[0];
 
   const addTask = () => {
@@ -18,12 +17,22 @@ function App() {
 
     setTasks([
       ...tasks,
-      { text: task, date, time }
+      {
+        id: Date.now(),
+        text: task,
+        date,
+        time,
+        status: "pending"
+      }
     ]);
 
     setTask("");
     setDate("");
     setTime("");
+  };
+
+  const completeTask = (id) => {
+    setTasks(tasks.filter(task => task.id !== id));
   };
 
   return (
@@ -54,11 +63,20 @@ function App() {
         <button onClick={addTask}>Add Task</button>
 
         <ul>
-          {tasks.map((t, index) => (
-            <li key={index}>
-              <strong>{t.text}</strong>
-              <span>📅 {t.date}</span>
-              <span>⏰ {t.time}</span>
+          {tasks.map((t) => (
+            <li key={t.id} className="task-item">
+              <div className="task-info">
+                <strong>{t.text}</strong>
+                <span>📅 {t.date}</span>
+                <span>⏰ {t.time}</span>
+              </div>
+
+              <div className="task-actions">
+                <span className="pending">⚠️ Pending</span>
+                <button onClick={() => completeTask(t.id)}>
+                  ✅ Completed
+                </button>
+              </div>
             </li>
           ))}
         </ul>
